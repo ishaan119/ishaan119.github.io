@@ -2,7 +2,9 @@
 layout: post
 title: "The Prompt Was Never the Point"
 subtitle: "What actually makes coding agents work"
+series: "Agentic Coding"
 date: 2026-07-30
+featured: true
 description: >-
   I went looking for the perfect prompt for coding agents. There isn't one.
   What the fast developers have is a system — five components, most buildable

@@ -1,33 +1,46 @@
 title: Ishaan Sutaria
-description: Notes from taking things apart — language models, serving, and agentic coding.
+tagline: Taking things apart to understand them.
+description: >-
+  Deep dives into language models and the systems around them — model internals,
+  fine-tuning, serving, agent protocols, and agentic coding. Every post is a
+  trace of something actually run, with measured numbers.
 author: Ishaan Sutaria
 
 url: "https://ishaan119.github.io"
 baseurl: ""
-
-# Dark palette is applied in assets/main.scss (minima 2.5 has no skin support).
-theme: minima
-minima:
-  date_format: "%b %-d, %Y"
-
 github_username: ishaan119
 
+hero_eyebrow: "Notes from the workbench"
+hero_title: "I take things apart to understand them."
+hero_lede: >-
+  Long-form traces through language models and the systems around them — what's
+  actually inside a model file, why a naive inference server is slow, how agent
+  protocols work on the wire, and what separates people shipping real work with
+  coding agents from people fighting them. Every number here is one I measured.
+
+# No parent theme — layouts and styles are all in this repo.
 plugins:
   - jekyll-feed
-  - jekyll-seo-tag
   - jekyll-sitemap
 
 permalink: /:title/
 markdown: kramdown
+
 kramdown:
+  input: GFM
   syntax_highlighter_opts:
     disable: true
 
-header_pages:
-  - about.md
+sass:
+  style: compressed
+
+defaults:
+  - scope: { path: "", type: "posts" }
+    values: { layout: "post" }
 
 exclude:
   - Gemfile
   - Gemfile.lock
   - README.md
   - vendor
+  - .ci-disabled

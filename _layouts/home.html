@@ -2,33 +2,70 @@
 layout: default
 ---
 
-<div class="home">
-  {%- if page.title -%}
-    <h1 class="page-heading">{{ page.title }}</h1>
-  {%- endif -%}
+<section class="hero">
+  <div class="shell">
+    <p class="hero-eyebrow">{{ site.hero_eyebrow }}</p>
+    <h1 class="hero-title">{{ site.hero_title }}</h1>
+    <p class="hero-lede">{{ site.hero_lede }}</p>
 
+    {%- assign all_series = site.posts | map: "series" | compact | uniq -%}
+    {%- assign minutes = 0 -%}
+    {%- for post in site.posts -%}
+      {%- assign w = post.content | number_of_words | divided_by: 220 | plus: 1 -%}
+      {%- assign minutes = minutes | plus: w -%}
+    {%- endfor -%}
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">{{ site.posts | size }}</span>
+        <span class="stat-label">deep dives</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">{{ all_series | size }}</span>
+        <span class="stat-label">series</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">{{ minutes }}</span>
+        <span class="stat-label">minutes of reading</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="shell">
+  <div class="filter-bar" role="group" aria-label="Filter posts by topic">
+    <button class="chip is-active" data-filter="all" type="button">All</button>
+    {%- assign tags = site.posts | map: "series" | uniq -%}
+    {%- for t in tags -%}
+      {%- if t -%}<button class="chip" data-filter="{{ t | slugify }}" type="button">{{ t }}</button>{%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <ul class="card-grid" id="post-list">
+    {%- for post in site.posts -%}
+    <li class="card-item" data-series="{{ post.series | slugify }}">
+      <a class="card" href="{{ post.url | relative_url }}">
+        <div class="card-top">
+          {%- if post.series -%}<span class="card-series">{{ post.series }}</span>{%- endif -%}
+          {%- if post.featured -%}<span class="card-flag">Featured</span>{%- endif -%}
+        </div>
+        <h2 class="card-title">{{ post.title }}</h2>
+        {%- if post.subtitle -%}<p class="card-sub">{{ post.subtitle }}</p>{%- endif -%}
+        <p class="card-desc">{{ post.description | strip_newlines | strip | truncate: 168 }}</p>
+        <div class="card-meta">
+          <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time>
+          <span class="dot">·</span>
+          {%- assign w = post.content | number_of_words -%}
+          <span>{{ w | divided_by: 220 | plus: 1 }} min</span>
+          <span class="card-arrow" aria-hidden="true">→</span>
+        </div>
+      </a>
+    </li>
+    {%- endfor -%}
+  </ul>
+
+  <p class="empty-note" id="empty-note" hidden>No posts in that topic yet.</p>
+</section>
+
+<section class="shell about-strip">
   {{ content }}
-
-  {%- if site.posts.size > 0 -%}
-    <h2 class="post-list-heading">{{ page.list_title | default: "Posts" }}</h2>
-    <ul class="post-list">
-      {%- for post in site.posts -%}
-      <li>
-        {%- assign date_format = site.minima.date_format | default: "%b %-d, %Y" -%}
-        <span class="post-meta">{{ post.date | date: date_format }}</span>
-        <h3>
-          <a class="post-link" href="{{ post.url | relative_url }}">
-            {{ post.title | escape }}
-          </a>
-        </h3>
-        {%- if post.description -%}
-          <p class="post-excerpt">{{ post.description | strip_newlines }}</p>
-        {%- endif -%}
-      </li>
-      {%- endfor -%}
-    </ul>
-
-    <p class="rss-subscribe">Subscribe <a href="{{ "/feed.xml" | relative_url }}">via RSS</a></p>
-  {%- endif -%}
-
-</div>
+</section>

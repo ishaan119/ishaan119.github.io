@@ -1,7 +1,7 @@
 # ishaan119.github.io
 
 Source for [ishaan119.github.io](https://ishaan119.github.io) — a Jekyll blog on
-GitHub Pages, built by GitHub Actions from `main`.
+GitHub Pages with a hand-rolled theme (no parent theme).
 
 ## Adding a post
 
@@ -9,18 +9,28 @@ Create `_posts/YYYY-MM-DD-slug.md` with front matter:
 
 ```yaml
 ---
-layout: post
 title: "Your Title"
 subtitle: "Optional one-liner under the title"
 date: 2026-07-30
+series: "LLM Internals"
 description: >-
-  Two or three sentences. Used for the homepage excerpt,
-  SEO meta tags, and the RSS feed.
+  Two or three sentences. Used for the homepage card,
+  meta tags, and the RSS feed.
+source_repo: https://github.com/ishaan119/some-repo   # optional
+featured: true                                        # optional
 ---
 ```
 
-Then `git push` — Actions builds and deploys. The URL is `/slug/`, from the
-filename minus the date.
+`layout: post` is applied automatically by the `defaults` block in `_config.yml`.
+
+`series` drives the badge on the card and the homepage filter chips — reuse an
+existing string exactly to group posts, or introduce a new one to add a chip.
+The homepage stats (post count, series count, total reading minutes) are all
+computed from the posts, so there's nothing to update by hand.
+
+Don't write an `# H1` at the top of the body — the layout renders the title.
+
+Then `git push`. The URL is `/slug/`, taken from the filename minus the date.
 
 Two gotchas: the date can't be in the future or the post won't build, and
 literal `{{` or `{%` in the body need wrapping in `{% raw %}...{% endraw %}`
@@ -44,14 +54,34 @@ Then open http://localhost:4000. It live-reloads on save, except for
 ## Layout
 
 ```
-_config.yml              site config
-_posts/                  one markdown file per post
-_layouts/                overrides of the minima theme's layouts
-assets/main.scss         dark palette + long-form typography
-.github/workflows/       build and deploy on push to main
+_config.yml         site config, hero copy, post defaults
+_posts/             one markdown file per post
+_layouts/
+  default.html      shell: header, nav, theme toggle, footer
+  home.html         hero, computed stats, filter chips, card grid
+  post.html         progress bar, TOC rail, prev/next
+  page.html         plain pages (about)
+assets/main.scss    all styles
+assets/site.js      theme toggle, filters, TOC, copy buttons
 ```
 
-The theme is [minima](https://github.com/jekyll/minima) with a dark palette and
-typography set in `assets/main.scss`. Sass variables there must stay *above* the
-`@import "minima"` line — the theme declares them with `!default`, so the first
-definition wins.
+## Theme notes
+
+Styling is entirely in `assets/main.scss` — CSS custom properties on `:root`
+for dark, overridden under `[data-theme="light"]`. To recolour the site, change
+the tokens at the top; nothing below hardcodes a colour.
+
+Two things that are easy to break:
+
+- **Vertical rhythm in posts** comes from `.post-content > * + * { margin-top }`.
+  Adding a bare `margin: 0` to an element inside `.post-content` outranks that
+  selector and silently flattens the spacing between every paragraph.
+- **Code blocks must not wrap** (`white-space: pre` + `overflow-x: auto`) —
+  several posts contain ASCII architecture diagrams that become unreadable if
+  the lines reflow.
+
+Deploys use the GitHub Pages legacy branch build from `main`, so only
+[allowlisted plugins](https://pages.github.com/versions/) work. There's a
+GitHub Actions workflow parked in `.ci-disabled/pages.yml.txt` if the build ever
+needs unlisted plugins — moving it to `.github/workflows/` requires a token with
+the `workflow` scope.
