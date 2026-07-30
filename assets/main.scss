@@ -17,11 +17,17 @@
   --text-dim:      #9aa1ae;
   --text-faint:    #6b7280;
   --heading:       #f4f6fa;
-  --accent:        #6ea8fe;
-  --accent-2:      #a78bfa;
-  --accent-3:      #34d3aa;
-  --accent-soft:   rgba(110, 168, 254, 0.11);
+  /* Five hues, used in rotation. accent stays the primary/link colour;
+     the rest tint series badges, chips, and gradients so the palette reads
+     as a spectrum rather than one blue. */
+  --accent:        #58b6ff;
+  --accent-2:      #b98bfa;
+  --accent-3:      #2fe0b0;
+  --accent-4:      #ff7ac4;
+  --accent-5:      #ffc457;
+  --accent-soft:   rgba(88, 182, 255, 0.13);
   --shadow:        0 14px 40px -18px rgba(0, 0, 0, 0.75);
+  --shadow-glow:   0 18px 48px -22px rgba(88, 182, 255, 0.45);
 
   --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -40,11 +46,14 @@
   --text-dim:      #5b6270;
   --text-faint:    #858c99;
   --heading:       #14161c;
-  --accent:        #2563eb;
+  --accent:        #1668e3;
   --accent-2:      #7c3aed;
-  --accent-3:      #0f9c78;
-  --accent-soft:   rgba(37, 99, 235, 0.08);
+  --accent-3:      #078f6c;
+  --accent-4:      #d6247e;
+  --accent-5:      #b8760a;
+  --accent-soft:   rgba(22, 104, 227, 0.09);
   --shadow:        0 12px 34px -20px rgba(20, 22, 28, 0.28);
+  --shadow-glow:   0 16px 40px -24px rgba(22, 104, 227, 0.4);
 }
 
 * { box-sizing: border-box; }
@@ -85,11 +94,13 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   pointer-events: none;
   z-index: 0;
   background:
-    radial-gradient(42% 50% at 30% 45%, rgba(110, 168, 254, 0.13), transparent 70%),
-    radial-gradient(38% 46% at 68% 38%, rgba(167, 139, 250, 0.12), transparent 70%);
-  filter: blur(12px);
+    radial-gradient(40% 48% at 18% 42%, rgba(88, 182, 255, 0.16), transparent 70%),
+    radial-gradient(36% 44% at 46% 34%, rgba(185, 139, 250, 0.15), transparent 70%),
+    radial-gradient(32% 42% at 72% 44%, rgba(255, 122, 196, 0.13), transparent 70%),
+    radial-gradient(30% 38% at 90% 32%, rgba(47, 224, 176, 0.11), transparent 70%);
+  filter: blur(14px);
 }
-[data-theme="light"] .glow { opacity: 0.55; }
+[data-theme="light"] .glow { opacity: 0.5; }
 
 /* ---------- header ---------- */
 
@@ -120,10 +131,13 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .brand:hover { text-decoration: none; }
 
 .brand-mark {
-  color: var(--accent);
   font-size: 0.85rem;
   transform: translateY(-1px);
   transition: transform 0.4s ease;
+  background: linear-gradient(135deg, var(--accent), var(--accent-4));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .brand:hover .brand-mark { transform: translateY(-1px) rotate(180deg); }
 
@@ -148,7 +162,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   left: 0; right: 0; bottom: -0.45rem;
   height: 2px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  background: linear-gradient(90deg, var(--accent), var(--accent-4));
 }
 
 .theme-toggle {
@@ -177,12 +191,22 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
   margin: 0 0 1rem;
   font-family: var(--mono);
   font-size: 0.78rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-3);
+}
+.hero-eyebrow::before {
+  content: "";
+  width: 1.8rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-3), var(--accent));
 }
 
 .hero-title {
@@ -193,7 +217,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--heading);
-  background: linear-gradient(180deg, var(--heading), color-mix(in srgb, var(--heading) 62%, var(--accent)));
+  background: linear-gradient(105deg, var(--heading) 8%, var(--accent) 42%, var(--accent-2) 62%, var(--accent-4) 88%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -224,6 +248,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   color: var(--heading);
 }
 
+/* Rotate the accent hues across the stat row. */
+.stat:nth-child(1) .stat-num { color: var(--accent); }
+.stat:nth-child(2) .stat-num { color: var(--accent-4); }
+.stat:nth-child(3) .stat-num { color: var(--accent-3); }
+
 .stat-label {
   font-family: var(--mono);
   font-size: 0.72rem;
@@ -244,6 +273,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .chip {
+  --tint: var(--accent);
   padding: 0.4rem 0.95rem;
   border: 1px solid var(--border-strong);
   border-radius: 999px;
@@ -255,13 +285,24 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   cursor: pointer;
   transition: all 0.18s ease;
 }
-.chip:hover { color: var(--text); border-color: var(--accent); }
-.chip.is-active {
-  color: var(--bg);
-  background: linear-gradient(135deg, var(--accent), var(--accent-2));
-  border-color: transparent;
+
+/* Match each chip to its series colour on the cards. */
+.chip[data-filter="agentic-coding"] { --tint: var(--accent-4); }
+.chip[data-filter="llm-internals"]  { --tint: var(--accent); }
+.chip[data-filter="protocols"]      { --tint: var(--accent-3); }
+.chip[data-filter="all"]            { --tint: var(--accent-2); }
+
+.chip:hover {
+  color: var(--tint);
+  border-color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 10%, transparent);
 }
-[data-theme="light"] .chip.is-active { color: #fff; }
+.chip.is-active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--tint), color-mix(in srgb, var(--tint) 45%, var(--accent-2)));
+  border-color: transparent;
+  box-shadow: 0 6px 18px -10px color-mix(in srgb, var(--tint) 80%, transparent);
+}
 
 /* ---------- post cards ---------- */
 
@@ -277,6 +318,14 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 .card-item.is-hidden { display: none; }
+
+/* Each series carries its own hue. --tint is set per series here and read by
+   the badge, the hover hairline, and the hover glow, so adding a series means
+   adding one rule. Falls back to --accent for anything unlisted. */
+.card-item { --tint: var(--accent); }
+.card-item[data-series="agentic-coding"] { --tint: var(--accent-4); }
+.card-item[data-series="llm-internals"]  { --tint: var(--accent); }
+.card-item[data-series="protocols"]      { --tint: var(--accent-3); }
 
 .card {
   display: flex;
@@ -298,19 +347,34 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   position: absolute;
   inset: 0 0 auto 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  background: linear-gradient(90deg, var(--tint), color-mix(in srgb, var(--tint) 40%, var(--accent-2)));
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.35s ease;
 }
 
+/* Soft wash of the series hue, revealed on hover. */
+.card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--tint) 18%, transparent), transparent 70%);
+  transition: opacity 0.3s ease;
+}
+
 .card:hover {
   transform: translateY(-4px);
-  border-color: var(--border-strong);
-  box-shadow: var(--shadow);
+  border-color: color-mix(in srgb, var(--tint) 45%, var(--border));
+  box-shadow: var(--shadow), 0 18px 44px -26px color-mix(in srgb, var(--tint) 60%, transparent);
   text-decoration: none;
 }
 .card:hover::before { transform: scaleX(1); }
+.card:hover::after { opacity: 1; }
+
+/* Keep content above the .card::after hover wash. */
+.card > * { position: relative; z-index: 1; }
 
 .card-top {
   display: flex;
@@ -324,10 +388,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   font-size: 0.68rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--tint);
   padding: 0.2rem 0.55rem;
   border-radius: 5px;
-  background: var(--accent-soft);
+  background: color-mix(in srgb, var(--tint) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tint) 28%, transparent);
 }
 
 .card-flag {
@@ -335,7 +400,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   font-size: 0.66rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--accent-3);
+  color: var(--accent-5);
 }
 
 .card-title {
@@ -398,13 +463,26 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   height: 3px;
   width: 0;
   z-index: 60;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--accent-3));
+  background: linear-gradient(90deg, var(--accent-3), var(--accent), var(--accent-2), var(--accent-4), var(--accent-5));
   transition: width 0.08s linear;
 }
 
 /* ---------- post ---------- */
 
+/* Same series-hue scheme as the cards, applied to the whole post page.
+   .post-nav is a sibling of .post, so it needs the tint rules too — otherwise
+   its color-mix() calls resolve against a missing --tint. */
 .post { position: relative; z-index: 1; }
+
+.post,
+.post-nav { --tint: var(--accent); }
+
+.post[data-series="agentic-coding"],
+.post-nav[data-series="agentic-coding"] { --tint: var(--accent-4); }
+.post[data-series="llm-internals"],
+.post-nav[data-series="llm-internals"]  { --tint: var(--accent); }
+.post[data-series="protocols"],
+.post-nav[data-series="protocols"]      { --tint: var(--accent-3); }
 
 .post-header {
   padding: 3.2rem 1.5rem 2rem;
@@ -421,12 +499,17 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .back-link:hover { color: var(--accent); text-decoration: none; }
 
 .post-series {
+  display: inline-block;
   margin: 0 0 0.9rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
   font-family: var(--mono);
   font-size: 0.74rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--tint) 30%, transparent);
 }
 
 .post-title {
@@ -437,6 +520,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--heading);
+  background: linear-gradient(102deg, var(--heading) 20%, color-mix(in srgb, var(--heading) 30%, var(--tint)) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .post-subtitle {
@@ -504,8 +591,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .toc a:hover { color: var(--text); text-decoration: none; border-left-color: var(--border-strong); }
 .toc a.is-current {
-  color: var(--accent);
-  border-left-color: var(--accent);
+  color: var(--tint);
+  border-left-color: var(--tint);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--tint) 11%, transparent), transparent);
   font-weight: 500;
 }
 .toc a.lvl-3 { padding-left: 1.5rem; font-size: 0.79rem; }
@@ -519,6 +607,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .post-content > * + * { margin-top: 1.15rem; }
 
 .post-content h2 {
+  position: relative;
   margin: 3.2rem 0 1.1rem;
   padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--border);
@@ -528,6 +617,18 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   font-weight: 700;
   color: var(--heading);
   scroll-margin-top: 5.5rem;
+}
+
+/* Short coloured tick riding the h2 rule. */
+.post-content h2::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 2.6rem;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--tint), color-mix(in srgb, var(--tint) 30%, var(--accent-2)));
 }
 
 .post-content h3 {
@@ -545,14 +646,14 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .post-content ul,
 .post-content ol { padding-left: 1.4rem; }
 .post-content li + li { margin-top: 0.45rem; }
-.post-content li::marker { color: var(--accent); }
+.post-content li::marker { color: var(--tint); }
 
 .post-content blockquote {
   margin: 1.9rem 0;
   padding: 1rem 1.3rem;
-  border-left: 3px solid var(--accent);
+  border-left: 3px solid var(--tint);
   border-radius: 0 8px 8px 0;
-  background: var(--accent-soft);
+  background: color-mix(in srgb, var(--tint) 9%, transparent);
   color: var(--text);
   font-size: 1.04rem;
 }
@@ -594,6 +695,18 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Copy button injected by JS. */
 .code-wrap { position: relative; }
+/* Thin spectrum edge along the top of each code block. */
+.code-wrap::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 1px;
+  right: 1px;
+  height: 2px;
+  border-radius: 10px 10px 0 0;
+  background: linear-gradient(90deg, var(--tint), color-mix(in srgb, var(--tint) 35%, var(--accent-2)), transparent 85%);
+  z-index: 1;
+}
 .copy-btn {
   position: absolute;
   top: 0.65rem; right: 0.65rem;
@@ -649,6 +762,73 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   border: 1px solid var(--border);
 }
 
+/* ---------- CV timeline (about page) ---------- */
+
+.cv {
+  margin: 1.8rem 0 2.2rem;
+  padding: 0 0 0 1.35rem;
+  list-style: none;
+  border-left: 2px solid var(--border);
+}
+
+.cv-item {
+  position: relative;
+  padding: 0 0 1.5rem;
+  --tint: var(--accent);
+}
+.cv-item:last-child { padding-bottom: 0; }
+
+/* Rotate hues down the timeline; data-tint is set per entry in the markup. */
+.cv-item[data-tint="1"] { --tint: var(--accent); }
+.cv-item[data-tint="2"] { --tint: var(--accent-2); }
+.cv-item[data-tint="3"] { --tint: var(--accent-3); }
+.cv-item[data-tint="4"] { --tint: var(--accent-4); }
+.cv-item[data-tint="5"] { --tint: var(--accent-5); }
+
+/* Node on the spine. */
+.cv-item::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.35rem - 6px);
+  top: 0.52rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--tint);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--tint) 20%, transparent);
+}
+
+.cv-when {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tint);
+  margin-bottom: 0.15rem;
+}
+
+.cv-role {
+  display: inline;
+  font-weight: 650;
+  color: var(--heading);
+}
+
+.cv-org {
+  display: inline;
+  color: var(--text-dim);
+}
+.cv-org::before { content: " · "; color: var(--text-faint); }
+
+.cv-note {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--text-faint);
+}
+
 /* Anchor links on headings. */
 .heading-anchor {
   margin-left: 0.45rem;
@@ -683,7 +863,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   background: var(--bg-card);
   transition: border-color 0.2s ease, transform 0.2s ease;
 }
-.pn:hover { border-color: var(--accent); transform: translateY(-2px); text-decoration: none; }
+.pn:hover {
+  border-color: color-mix(in srgb, var(--tint) 50%, var(--border));
+  background: color-mix(in srgb, var(--tint) 6%, var(--bg-card));
+  transform: translateY(-2px);
+  text-decoration: none;
+}
 .pn-next { text-align: right; }
 
 .pn-label {

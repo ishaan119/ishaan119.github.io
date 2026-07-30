@@ -4,7 +4,7 @@ layout: default
 
 <div class="progress-bar" id="progress" aria-hidden="true"></div>
 
-<article class="post">
+<article class="post" data-series="{{ page.series | slugify }}">
   <header class="post-header shell">
     <a class="back-link" href="{{ '/' | relative_url }}">← All writing</a>
     {%- if page.series -%}
@@ -38,7 +38,7 @@ layout: default
   </div>
 </article>
 
-<nav class="post-nav shell" aria-label="Other posts">
+<nav class="post-nav shell" data-series="{{ page.series | slugify }}" aria-label="Other posts">
   {%- if page.previous -%}
     <a class="pn pn-prev" href="{{ page.previous.url | relative_url }}">
       <span class="pn-label">← Previous</span>
