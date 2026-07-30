@@ -551,7 +551,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   gap: 0;
   padding-bottom: 3rem;
 }
-.post-body.no-toc { display: block; max-width: 46rem; }
+/* No TOC means no left rail, so keep the container full width and narrow the
+   prose instead — shrinking .post-body would let .shell's auto margins centre
+   it, indenting the text away from the page heading above it. */
+.post-body.no-toc { display: block; }
+.post-body.no-toc .post-content { max-width: 46rem; }
 
 .post-content {
   grid-column: 2;
@@ -942,8 +946,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 @media (max-width: 900px) {
-  .post-body { display: block; max-width: 46rem; }
-  .post-content { max-width: none; }
+  /* Same reasoning as .no-toc above: narrow the prose, not the container. */
+  .post-body { display: block; }
+  .post-body .post-content { max-width: 46rem; }
 }
 
 @media (max-width: 640px) {
