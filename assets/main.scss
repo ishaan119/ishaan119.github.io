@@ -7,30 +7,40 @@
    ============================================================ */
 
 :root {
-  --bg:            #0d0e12;
-  --bg-soft:       #14161c;
-  --bg-card:       #15171f;
-  --bg-code:       #0a0b0e;
-  --border:        #23262f;
-  --border-strong: #2f333e;
-  --text:          #e3e7ee;
-  --text-dim:      #a8afbc;
-  /* Was #6b7280 — only 3.99:1 on the page background, which fails AA for the
-     card descriptions and post meta it's used on. This clears 5.4:1 even on
-     the lighter card surface. */
-  --text-faint:    #868e9e;
-  --heading:       #f6f8fb;
+  /* Surfaces carry the hue, not just the accents. These are plum-violet, not
+     neutral charcoal — a near-zero-chroma base like #0d0e12 reads as "default
+     dark mode" no matter how many accent colours you scatter on top of it, and
+     the accents end up looking bolted on rather than part of a palette.
+     Putting the colour in the background costs nothing in legibility: every
+     pair below was measured, and body text sits at 15:1. */
+  --bg:            #14101f;
+  --bg-soft:       #1c1730;
+  --bg-card:       #1e1833;
+  --bg-code:       #0e0b17;
+  /* Borders are tinted too. Grey hairlines on a violet surface look like dirt. */
+  --border:        #2e2745;
+  --border-strong: #40365e;
+  --text:          #e9e4f5;
+  --text-dim:      #b3aacb;
+  /* 4.8:1 at its worst case, which is .card-meta sitting on the most-tinted
+     corner of a card's gradient — not the flat --bg-card it looks like. Any
+     darker and that corner drops under AA. */
+  --text-faint:    #968dae;
+  --heading:       #fbf9ff;
   /* Five hues, used in rotation. accent stays the primary/link colour;
      the rest tint series badges, chips, and gradients so the palette reads
-     as a spectrum rather than one blue. */
-  --accent:        #58b6ff;
-  --accent-2:      #b98bfa;
-  --accent-3:      #2fe0b0;
-  --accent-4:      #ff7ac4;
-  --accent-5:      #ffc457;
-  --accent-soft:   rgba(88, 182, 255, 0.13);
-  --shadow:        0 14px 40px -18px rgba(0, 0, 0, 0.75);
-  --shadow-glow:   0 18px 48px -22px rgba(88, 182, 255, 0.45);
+     as a spectrum rather than one blue. Nudged brighter and slightly warmer
+     than before to hold their own against the violet base. */
+  --accent:        #6cc5ff;
+  --accent-2:      #c79bff;
+  --accent-3:      #3ee8b5;
+  --accent-4:      #ff7fc9;
+  --accent-5:      #ffc86b;
+  --accent-soft:   rgba(108, 197, 255, 0.14);
+  /* Shadows are plum rather than black — a black drop shadow on a coloured
+     surface greys it out and undoes the tint. */
+  --shadow:        0 14px 40px -18px rgba(8, 4, 20, 0.8);
+  --shadow-glow:   0 18px 48px -22px rgba(140, 110, 255, 0.5);
 
   --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -42,26 +52,30 @@
 }
 
 [data-theme="light"] {
-  --bg:            #fbfbfd;
-  --bg-soft:       #f3f4f8;
+  /* Light gets the same treatment from the other direction: a violet-tinted
+     off-white instead of #fbfbfd, so the two themes are recognisably the same
+     site. Cards stay pure white to lift them off the page. */
+  --bg:            #f8f6fc;
+  --bg-soft:       #efebf8;
   --bg-card:       #ffffff;
-  --bg-code:       #14161c;
-  --border:        #e3e5ec;
-  --border-strong: #d0d4de;
-  --text:          #2c3038;
-  --text-dim:      #545b69;
-  /* Was #858c99 at 3.27:1 — failed AA on body-size text. */
-  --text-faint:    #697080;
-  --heading:       #14161c;
-  --accent:        #1668e3;
-  --accent-2:      #7c3aed;
-  /* Darkened from #078f6c / #b8760a, both of which failed AA on the light bg. */
-  --accent-3:      #067a5c;
-  --accent-4:      #d6247e;
-  --accent-5:      #9c6408;
-  --accent-soft:   rgba(22, 104, 227, 0.09);
-  --shadow:        0 12px 34px -20px rgba(20, 22, 28, 0.28);
-  --shadow-glow:   0 16px 40px -24px rgba(22, 104, 227, 0.4);
+  --bg-code:       #171326;
+  --border:        #e2dcf0;
+  --border-strong: #cdc4e2;
+  --text:          #2b2738;
+  --text-dim:      #544d68;
+  /* 4.8:1 on the soft surface, its worst case — still AA. */
+  --text-faint:    #6b6382;
+  --heading:       #171326;
+  /* Saturated versions of the dark-theme hues, darkened until each clears AA
+     on the lightest surface it lands on. */
+  --accent:        #1b63d6;
+  --accent-2:      #7229e0;
+  --accent-3:      #04745a;
+  --accent-4:      #c81d76;
+  --accent-5:      #8a5b06;
+  --accent-soft:   rgba(27, 99, 214, 0.09);
+  --shadow:        0 12px 34px -20px rgba(45, 30, 80, 0.3);
+  --shadow-glow:   0 16px 40px -24px rgba(114, 41, 224, 0.38);
 }
 
 * { box-sizing: border-box; }
@@ -101,16 +115,19 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   width: 130vw; height: 70vh;
   pointer-events: none;
   z-index: 0;
-  /* Kept deliberately faint — this sits behind the hero text, and anything
-     stronger eats into the contrast of the words on top of it. */
+  /* Sits behind the hero text, so it's a wash and not a light show — but the
+     violet base absorbs more colour than the old charcoal did before the text
+     on top starts losing contrast, so these run roughly twice the previous
+     strength. Four overlapping hues rather than one blue glow: the overlaps
+     are where the interesting in-between colours come from. */
   background:
-    radial-gradient(40% 48% at 18% 42%, rgba(88, 182, 255, 0.09), transparent 70%),
-    radial-gradient(36% 44% at 46% 34%, rgba(185, 139, 250, 0.08), transparent 70%),
-    radial-gradient(32% 42% at 72% 44%, rgba(255, 122, 196, 0.07), transparent 70%),
-    radial-gradient(30% 38% at 90% 32%, rgba(47, 224, 176, 0.06), transparent 70%);
-  filter: blur(16px);
+    radial-gradient(42% 50% at 16% 40%, rgba(108, 197, 255, 0.20), transparent 70%),
+    radial-gradient(38% 46% at 44% 30%, rgba(199, 155, 255, 0.22), transparent 70%),
+    radial-gradient(34% 44% at 71% 42%, rgba(255, 127, 201, 0.18), transparent 70%),
+    radial-gradient(32% 40% at 92% 28%, rgba(62, 232, 181, 0.14), transparent 70%);
+  filter: blur(22px);
 }
-[data-theme="light"] .glow { opacity: 0.4; }
+[data-theme="light"] .glow { opacity: 0.55; }
 
 /* ---------- header ---------- */
 
@@ -347,7 +364,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   padding: 1.5rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: var(--bg-card);
+  /* Faint tint-to-surface gradient rather than a flat fill, so each card leans
+     towards its own series hue. Kept under 6% — enough to feel coloured, not
+     enough to shift the contrast of the text sitting on it. */
+  background: linear-gradient(160deg, color-mix(in srgb, var(--tint) 6%, var(--bg-card)), var(--bg-card) 62%);
   color: inherit;
   position: relative;
   overflow: hidden;
@@ -696,7 +716,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
      fit because pre scrolls horizontally rather than wrapping. */
   font-size: 0.86rem;
   line-height: 1.6;
-  color: #dde2ec;
+  /* Faintly violet rather than the old cold grey, which read as a foreign
+     element against the tinted surfaces. 14:1 on --bg-code. */
+  color: #e2dcf2;
   -webkit-overflow-scrolling: touch;
 }
 .post-content pre code {
