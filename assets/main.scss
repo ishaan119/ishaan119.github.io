@@ -498,8 +498,12 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .back-link:hover { color: var(--accent); text-decoration: none; }
 
+/* Block, not inline-block: .back-link above is inline-block, so an inline-block
+   badge would flow onto the same line and collide with it. fit-content keeps the
+   pill hugging its text instead of spanning the column. */
 .post-series {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   margin: 0 0 0.9rem;
   padding: 0.25rem 0.7rem;
   border-radius: 999px;
