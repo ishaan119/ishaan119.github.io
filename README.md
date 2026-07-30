@@ -75,7 +75,10 @@ Two things that are easy to break:
 
 - **Vertical rhythm in posts** comes from `.post-content > * + * { margin-top }`.
   Adding a bare `margin: 0` to an element inside `.post-content` outranks that
-  selector and silently flattens the spacing between every paragraph.
+  selector and silently flattens the spacing between every paragraph. The gap is
+  in `em`, not `rem`, on purpose: it has to stay clearly taller than the line
+  height *inside* a paragraph, and a fixed `rem` gap loses that margin as soon as
+  the prose font size goes up.
 - **Code blocks must not wrap** (`white-space: pre` + `overflow-x: auto`) —
   several posts contain ASCII architecture diagrams that become unreadable if
   the lines reflow.
