@@ -137,7 +137,7 @@ from its files through fine-tuning to production serving:
 
 **Agentic Coding** — what actually works when you build software with agents:
 
-- [The Prompt Was Never the Point]({{ '/the-prompt-was-never-the-point/' | relative_url }})
+- [Stop Prompting. Start Engineering.]({{ '/stop-prompting-start-engineering/' | relative_url }})
   — the five components of a working setup, and the research behind each one.
 
 ## Elsewhere
