@@ -1,0 +1,33 @@
+title: Ishaan Sutaria
+description: Notes from taking things apart — language models, serving, and agentic coding.
+author: Ishaan Sutaria
+
+url: "https://ishaan119.github.io"
+baseurl: ""
+
+# Dark palette is applied in assets/main.scss (minima 2.5 has no skin support).
+theme: minima
+minima:
+  date_format: "%b %-d, %Y"
+
+github_username: ishaan119
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+permalink: /:title/
+markdown: kramdown
+kramdown:
+  syntax_highlighter_opts:
+    disable: true
+
+header_pages:
+  - about.md
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor
