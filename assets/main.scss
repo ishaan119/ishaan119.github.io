@@ -13,10 +13,13 @@
   --bg-code:       #0a0b0e;
   --border:        #23262f;
   --border-strong: #2f333e;
-  --text:          #dfe3ea;
-  --text-dim:      #9aa1ae;
-  --text-faint:    #6b7280;
-  --heading:       #f4f6fa;
+  --text:          #e3e7ee;
+  --text-dim:      #a8afbc;
+  /* Was #6b7280 — only 3.99:1 on the page background, which fails AA for the
+     card descriptions and post meta it's used on. This clears 5.4:1 even on
+     the lighter card surface. */
+  --text-faint:    #868e9e;
+  --heading:       #f6f8fb;
   /* Five hues, used in rotation. accent stays the primary/link colour;
      the rest tint series badges, chips, and gradients so the palette reads
      as a spectrum rather than one blue. */
@@ -31,7 +34,10 @@
 
   --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --measure: 44rem;
+  /* 38rem ≈ 66 characters per line at the body size — inside the 60–75 range
+     that long-form reading wants. Wider columns make the eye lose its place on
+     the return sweep. */
+  --measure: 38rem;
   --radius: 14px;
 }
 
@@ -43,14 +49,16 @@
   --border:        #e3e5ec;
   --border-strong: #d0d4de;
   --text:          #2c3038;
-  --text-dim:      #5b6270;
-  --text-faint:    #858c99;
+  --text-dim:      #545b69;
+  /* Was #858c99 at 3.27:1 — failed AA on body-size text. */
+  --text-faint:    #697080;
   --heading:       #14161c;
   --accent:        #1668e3;
   --accent-2:      #7c3aed;
-  --accent-3:      #078f6c;
+  /* Darkened from #078f6c / #b8760a, both of which failed AA on the light bg. */
+  --accent-3:      #067a5c;
   --accent-4:      #d6247e;
-  --accent-5:      #b8760a;
+  --accent-5:      #9c6408;
   --accent-soft:   rgba(22, 104, 227, 0.09);
   --shadow:        0 12px 34px -20px rgba(20, 22, 28, 0.28);
   --shadow-glow:   0 16px 40px -24px rgba(22, 104, 227, 0.4);
@@ -69,8 +77,8 @@ body {
   background: var(--bg);
   color: var(--text);
   font-family: var(--font);
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 17.5px;
+  line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.28s ease, color 0.28s ease;
 }
@@ -93,14 +101,16 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   width: 130vw; height: 70vh;
   pointer-events: none;
   z-index: 0;
+  /* Kept deliberately faint — this sits behind the hero text, and anything
+     stronger eats into the contrast of the words on top of it. */
   background:
-    radial-gradient(40% 48% at 18% 42%, rgba(88, 182, 255, 0.16), transparent 70%),
-    radial-gradient(36% 44% at 46% 34%, rgba(185, 139, 250, 0.15), transparent 70%),
-    radial-gradient(32% 42% at 72% 44%, rgba(255, 122, 196, 0.13), transparent 70%),
-    radial-gradient(30% 38% at 90% 32%, rgba(47, 224, 176, 0.11), transparent 70%);
-  filter: blur(14px);
+    radial-gradient(40% 48% at 18% 42%, rgba(88, 182, 255, 0.09), transparent 70%),
+    radial-gradient(36% 44% at 46% 34%, rgba(185, 139, 250, 0.08), transparent 70%),
+    radial-gradient(32% 42% at 72% 44%, rgba(255, 122, 196, 0.07), transparent 70%),
+    radial-gradient(30% 38% at 90% 32%, rgba(47, 224, 176, 0.06), transparent 70%);
+  filter: blur(16px);
 }
-[data-theme="light"] .glow { opacity: 0.5; }
+[data-theme="light"] .glow { opacity: 0.4; }
 
 /* ---------- header ---------- */
 
@@ -217,7 +227,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   letter-spacing: -0.035em;
   font-weight: 800;
   color: var(--heading);
-  background: linear-gradient(105deg, var(--heading) 8%, var(--accent) 42%, var(--accent-2) 62%, var(--accent-4) 88%);
+  /* Gradient starts well into the line so the opening words stay full-contrast
+     heading colour — a gradient across every word costs more legibility than
+     it buys. */
+  background: linear-gradient(102deg, var(--heading) 45%, var(--accent) 72%, var(--accent-2) 92%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -353,17 +366,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   transition: transform 0.35s ease;
 }
 
-/* Soft wash of the series hue, revealed on hover. */
-.card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(80% 60% at 100% 0%, color-mix(in srgb, var(--tint) 18%, transparent), transparent 70%);
-  transition: opacity 0.3s ease;
-}
-
 .card:hover {
   transform: translateY(-4px);
   border-color: color-mix(in srgb, var(--tint) 45%, var(--border));
@@ -371,7 +373,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   text-decoration: none;
 }
 .card:hover::before { transform: scaleX(1); }
-.card:hover::after { opacity: 1; }
 
 /* Keep content above the .card::after hover wash. */
 .card > * { position: relative; z-index: 1; }
@@ -420,9 +421,9 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 .card-desc {
   margin: 0 0 1.3rem;
-  font-size: 0.92rem;
-  line-height: 1.62;
-  color: var(--text-faint);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-dim);
   flex: 1;
 }
 
@@ -523,11 +524,10 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   line-height: 1.08;
   letter-spacing: -0.035em;
   font-weight: 800;
+  /* Post titles stay solid. A gradient on the thing you're about to read for
+     30 minutes is decoration in the wrong place; the series pill above already
+     carries the colour. */
   color: var(--heading);
-  background: linear-gradient(102deg, var(--heading) 20%, color-mix(in srgb, var(--heading) 30%, var(--tint)) 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .post-subtitle {
@@ -610,9 +610,15 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 
 /* Vertical rhythm comes from the sibling rule alone. Element rules below that
    want different spacing must set margin explicitly (h2, pre, blockquote do) —
-   a bare `margin: 0` would outrank the sibling selector and flatten the flow. */
+   a bare `margin: 0` would outrank the sibling selector and flatten the flow.
+
+   The gap must clearly exceed the line height *inside* a paragraph, or
+   paragraph breaks stop reading as breaks and the page becomes a wall of text.
+   Expressed in em (relative to the prose font size, so it tracks the 1.75
+   line-height) rather than rem — a rem value stays fixed while the line box
+   scales, and the two end up the same height. */
 .post-content > * { margin: 0; }
-.post-content > * + * { margin-top: 1.15rem; }
+.post-content > * + * { margin-top: 2.2em; }
 
 .post-content h2 {
   position: relative;
@@ -648,12 +654,21 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   scroll-margin-top: 5.5rem;
 }
 
+/* Slightly looser leading and a hair more size than UI text — this is the one
+   place on the site where people read hundreds of words at a stretch. */
+.post-content {
+  font-size: 1.06rem;
+  line-height: 1.75;
+}
 .post-content strong { color: var(--heading); font-weight: 650; }
 .post-content em { color: var(--text); }
 
 .post-content ul,
-.post-content ol { padding-left: 1.4rem; }
-.post-content li + li { margin-top: 0.45rem; }
+.post-content ol { padding-left: 1.5rem; }
+.post-content li { padding-left: 0.2rem; }
+.post-content li + li { margin-top: 0.7rem; }
+/* Nested content inside a list item needs its own breathing room. */
+.post-content li > p + p { margin-top: 0.7rem; }
 .post-content li::marker { color: var(--tint); }
 
 .post-content blockquote {
@@ -677,9 +692,11 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   background: var(--bg-code);
   overflow-x: auto;
   font-family: var(--mono);
-  font-size: 0.795rem;
-  line-height: 1.55;
-  color: #d3d8e3;
+  /* 0.795rem measured ~12.7px, small enough to strain on. ASCII diagrams still
+     fit because pre scrolls horizontally rather than wrapping. */
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: #dde2ec;
   -webkit-overflow-scrolling: touch;
 }
 .post-content pre code {
@@ -956,7 +973,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 
 @media (max-width: 640px) {
-  body { font-size: 16.5px; }
+  body { font-size: 17px; }
   .hero { padding: 3.5rem 0 2.2rem; }
   .hero-stats { gap: 1.8rem; }
   .card-grid { grid-template-columns: 1fr; }
@@ -964,7 +981,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   .pn-next { text-align: left; }
   .site-nav { gap: 1rem; font-size: 0.88rem; }
   .brand-text { display: none; }
-  .post-content pre { font-size: 0.735rem; }
+  .post-content { font-size: 1.02rem; }
+  .post-content pre { font-size: 0.78rem; }
   .to-top { right: 1rem; bottom: 1rem; }
 }
 

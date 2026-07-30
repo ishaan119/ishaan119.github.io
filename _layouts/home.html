@@ -50,7 +50,7 @@ layout: default
         </div>
         <h2 class="card-title">{{ post.title }}</h2>
         {%- if post.subtitle -%}<p class="card-sub">{{ post.subtitle }}</p>{%- endif -%}
-        <p class="card-desc">{{ post.description | strip_newlines | strip | truncate: 168 }}</p>
+        <p class="card-desc">{{ post.description | strip_newlines | strip | truncatewords: 26 }}</p>
         <div class="card-meta">
           <time datetime="{{ post.date | date_to_xmlschema }}">{{ post.date | date: "%b %Y" }}</time>
           <span class="dot">·</span>
