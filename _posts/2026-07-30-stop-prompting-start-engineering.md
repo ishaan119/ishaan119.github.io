@@ -11,6 +11,9 @@ description: >-
   in under an hour. Here it is.
 ---
 
+<img width="1408" height="768" alt="Gemini_Generated_Image_ndv6gkndv6gkndv6" src="https://github.com/user-attachments/assets/cdc0d146-517f-4683-9318-815831287765" />
+
+
 I went looking for the prompt.
 
 That was the premise: somewhere out there was a way of phrasing things — a magic preamble, a role-play trick, the right adjectives — that separated people shipping real work with coding agents from people fighting them.
