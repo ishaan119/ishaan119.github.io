@@ -8,61 +8,32 @@ featured: true
 description: >-
   I went looking for the perfect prompt for coding agents. There isn't one.
   What the fast developers have is a system — five components, most buildable
-  in under an hour. Here it is, with the research behind each piece.
+  in under an hour. Here it is.
 ---
 
 I went looking for the prompt.
 
-That was the premise: somewhere out there was a way of phrasing things — a magic preamble, a role-play trick, the right adjectives — that separated people shipping real work with coding agents from people fighting them. I'd been using agents daily for months. Some days felt like a superpower. Other days I'd spend forty minutes correcting an agent on a problem I could have solved in ten.
-
-So I did what I did with [model internals](https://github.com/ishaan119/understanding_llm_model_structure) and [model serving](https://github.com/ishaan119/serving_llm_models): I read the research, the practitioner write-ups, and the field reports from people running agents at scale, then rebuilt my setup around what I found.
+That was the premise: somewhere out there was a way of phrasing things — a magic preamble, a role-play trick, the right adjectives — that separated people shipping real work with coding agents from people fighting them.
 
 There was no prompt.
 
-What the fast developers have is a **system** — five components, most buildable in under an hour, that turn a clever autocomplete into something that verifies its own work. The prompt is one of the five, and it's the one with the shortest half-life.
-
 ---
 
-## Part 0: You Cannot Feel This Working
+## You Cannot Feel This Working
 
-One uncomfortable finding first, because it changes how you should read everything after it.
+For months I couldn't tell whether any of this was helping.
 
-In 2025, METR ran a randomized controlled trial on 16 experienced open-source maintainers working 246 real issues in their own mature repositories — 22k+ stars, over a million lines. Experts on home turf.
+Some days felt like a superpower. Other days I'd spend forty minutes correcting an agent on a problem I could have solved in ten. My output volume was up and my confidence in that output was down. When I was honest about where the time actually went — the re-reading, the corrections, the work that looked finished and wasn't — I wasn't faster. I was busier.
 
-With AI tools, they took **19% longer**.
+That's the trap, and it's structural. Generation is visible and fast. The cost lands later, spread across correction cycles, which is exactly where it hides from your sense of speed. So "I'll try things and keep whatever feels faster" isn't a plan. Your feelings are the one instrument in the setup that's known to be broken.
 
-The number that matters more sits next to it. They forecast they'd be 24% *faster*. Afterwards, having lived through it, they still believed they'd been **20% faster**. Stanford's telemetry across ~100,000 developers at 600+ companies found the same gap at scale: self-assessments deviated from measured productivity by about **30 percentage points**.
+Which moves the goal. If your own read on it is unreliable, getting better at prompting is the wrong target — you can't tune what you can't measure. What you can do is build the thing that makes the agent's work checkable without you.
 
-The honest update, because it's mid-2026 and citing a year-old study as current is the sloppiness this post argues against: METR's second study (57 developers, 143 repos, 800+ tasks) points weakly toward *speedup*. But they don't stand behind the numbers, and the reason is instructive — developers began refusing to enroll, and 30–50% withheld tasks they didn't want to attempt unaided. Both effects strip out exactly the cases where AI helps most, so METR frames the result as a lower bound.
+The other pattern I kept hitting: **context decides the ceiling.** Greenfield and mechanical work goes well — hand it over, run it wide. Complex changes in a large codebase I know intimately are where the gains evaporate and where I have to earn them back through structure. That difference is a delegation guide, not a flaw in the tools.
 
-So the tooling improved. Here's what didn't get revised:
+And agents amplify whatever engineering you already have. Real tests, fast CI, small batches — those convert agent speed into throughput. Without them, the speed converts into instability. Agents don't fix a broken pipeline. They find it faster.
 
-> The perception gap. No study has found that developers can accurately sense their own productivity with these tools.
-
-Which means "I'll try things and keep what feels faster" is not a plan. Your feelings are the one instrument here that's known to be broken.
-
-### Where the gains actually are
-
-The other thing that replicated: **context dominates**. Google's internal RCT found ~21% faster on an enterprise task. Peng et al. found 55.8% faster on a greenfield toy task. METR found 19% slower on expert brownfield work. Same technology, opposite signs.
-
-Stanford's data, after subtracting rework — which claws back a third to half of apparent gains:
-
-| Context | Net effect |
-|---|---:|
-| Greenfield, low complexity | **+30–40%** |
-| Brownfield, low complexity | +15–20% |
-| Greenfield, high complexity | +10–15% |
-| Brownfield, high complexity | **0–10%, can go negative** |
-
-**This table is a delegation guide.** Greenfield and mechanical work: hand it over, run it unattended. Complex changes in a large codebase you know intimately: stay in the loop.
-
-DORA's 2025 report (~5,000 respondents) ties it together: AI **amplifies** existing organizational strengths. Teams with real tests, fast CI, and small batches convert agent speed into throughput. Teams without them convert it into instability.
-
-Agents don't fix a broken pipeline. They find it faster.
-
----
-
-## Part 1: The Five Components
+Here's the shape of what actually worked. Five parts of one machine, each covering a different failure mode:
 
 ```
                   ┌─────────────────────────────────────┐
@@ -71,19 +42,19 @@ Agents don't fix a broken pipeline. They find it faster.
                   └──────────────┬──────────────────────┘
                                  │
         ┌────────────────────────▼─────────────────────────┐
-        │  PROMPTS    how you ask                          │  Act 1  (free)
+        │  PROMPTS    how you ask                          │  free
         │             scope · source · pattern · symptom   │
         ├──────────────────────────────────────────────────┤
-        │  MEMORY     what it knows without being told     │  Act 2  (~1 hr)
+        │  MEMORY     what it knows without being told     │  ~1 hour
         │             instructions · skills · hooks        │
         ├──────────────────────────────────────────────────┤
-        │  GATES      what catches mistakes, not you       │  Act 3
+        │  GATES      what catches mistakes, not you       │  safety net
         │             fresh-eyes review · CI · specialists │
         ├──────────────────────────────────────────────────┤
-        │  WORKERS    parallelism that scales you          │  Act 4
+        │  WORKERS    parallelism that scales you          │  multiplier
         │             worktrees · fan-out · overnight runs │
         ├──────────────────────────────────────────────────┤
-        │  FLYWHEEL   how the system improves itself       │  Act 4
+        │  FLYWHEEL   how the system improves itself       │  compounds
         │             capture tricks · measure · prune     │
         └──────────────────────────────────────────────────┘
 ```
@@ -96,13 +67,13 @@ My first model server was slow, and my instinct was to make the single request f
 
 ---
 
-## Act 1: Talk to It Better
+## Talk to It Better
 
 Zero setup, pure craft. Four habits.
 
-### 1. Bake verification into every prompt
+### Bake verification into every prompt
 
-An agent stops when the work *looks* done. If there's no check it can run itself, then **you** are the verification step — and that's the loop that makes agents feel fast and measure slow. The time doesn't show up in generation; it shows up in the correction cycles.
+An agent stops when the work *looks* done. If there's no check it can run itself, then **you** are the verification step — and that's the loop that makes agents feel fast and measure slow.
 
 ```
 # BEFORE (you are the verification loop)
@@ -122,11 +93,11 @@ don't weaken the test.
 
 Concrete pass/fail cases, the command that proves it, and *"show me the output"* — evidence, not assertions. Without that last clause you get "All tests pass!" as a claim, and claims are what you're eliminating.
 
-`don't weaken the test` isn't decoration. Weakening tests to make them pass is the number one way agents cheat; Act 3 has a CI gate for it.
+`don't weaken the test` isn't decoration. Weakening tests to make them pass is the number one way agents cheat; there's a CI gate for it further down.
 
 > *"If you haven't seen it run, it's not a working system."* — Simon Willison
 
-### 2. The four ingredients
+### The four ingredients
 
 Vague prompts don't fail loudly. They cost you three correction rounds — exactly the cost that hides from your sense of speed. Embed the intuition you already have as specifics:
 
@@ -135,50 +106,17 @@ Vague prompts don't fail loudly. They cost you three correction rounds — exact
 - **Pattern** — an existing example to imitate
 - **Symptom** — what you observed, and what "fixed" looks like
 
-```
-# BEFORE
-fix the login bug
-
-# AFTER (scope + source + pattern + symptom)
-Users report login fails after session timeout.
-Check the auth flow in src/auth/, especially
-token refresh.
-Look at how src/api/client.ts handles token
-refresh - follow that pattern.
-Write a failing test that reproduces it FIRST,
-then fix, then run the suite.
-```
-
-The missing ingredient is almost always **pattern** or **symptom**. Scope and source come naturally because they're what you'd tell a colleague. Pattern — "here's the code that already does this correctly" — is what turns a plausible invention into something that matches your codebase.
+The missing ingredient is almost always **pattern** or **symptom**. Scope and source come naturally, because they're what you'd tell a colleague. Pattern — "here's the code that already does this correctly" — is what turns a plausible invention into something that matches your codebase.
 
 When you're exploring, vague is *correct*. "What would you improve about this file?" is a great prompt.
 
-### 3. The two-strike rule
+### The two-strike rule
 
-When you correct an agent and it fails, that failed attempt **stays in the context window**, anchoring everything after it. Correct it again and there are two bad attempts in there. You're collaborating with something that has read its own wrong answers three times.
+When you correct an agent and it fails, that failed attempt **stays in the context window**, anchoring everything after it. Correct it again and there are two bad attempts in there. You're no longer collaborating with a fresh mind — you're collaborating with something that has read its own wrong answers three times.
 
-```
-   context quality
-        │
-   good ●────────────╮
-        │             ╰──● strike 1: one bad attempt in context
-        │                  ╰────● strike 2: it's anchoring now
-        │                        ╰──────● strike 3+: poisoned
-    bad │
-        └──────────────────────────────────────▶ corrections
-
-        ┌─ CLEAR HERE ─┐
-        │  and re-prompt with what you learned
-        └──────────────┘
-```
-
-Two failed corrections on the same issue → clear the session, re-prompt, fold in what you learned:
+Two failed corrections on the same issue → clear the session, re-prompt, and fold in what you learned:
 
 ```
-# strike 1: correct it
-# strike 2: correct it again
-# then: CLEAR THE SESSION and re-prompt:
-
 Refactor the session store to Redis.
 NOTE: the naive approach fails because
 middleware reads the session before hydration -
@@ -187,16 +125,13 @@ Put the Redis client init in a factory that
 middleware and routes both import.
 ```
 
-That `NOTE` is the technique: what you learned from strikes 1 and 2, promoted from a correction into context. First-try fix, because now it's a constraint instead of an argument.
+That `NOTE` is the technique: what you learned from the two failures, promoted from a correction into context. First-try fix, because now it's a constraint instead of an argument.
 
 Same principle, different symptom: **one task, one session.** The side question's context doesn't disappear when you're done with it.
 
-### 4. Plan before you build
+### Plan before you build
 
-```
-1 bad line of code  =  1 bug
-1 bad line of plan  =  hundreds of bad lines of code
-```
+One bad line of code is one bug. One bad line of *plan* is hundreds of bad lines of code.
 
 I can't review 2,000 lines of diff a day. I can review 200 lines of plan — and at that stage, cutting scope creep costs one keystroke instead of a refactor.
 
@@ -225,9 +160,9 @@ Skip all of this when the diff fits in one sentence.
 
 ---
 
-## Act 2: Teach It Your World
+## Teach It Your World
 
-Act 1 helps for one session. Act 2 is an hour of setup that **every future session inherits**.
+The habits above help for one session. This is an hour of setup that **every future session inherits**.
 
 ### The instructions file
 
@@ -264,20 +199,13 @@ A real one, complete:
   reduction in test coverage.
 ```
 
-That last line is rule 3 in action — a framing of what good looks like, which is what actually steers behavior.
+That last line is rule 3 in action — a framing of what good looks like, which is what actually steers behaviour.
 
 ### Skills: your workflows, on demand
 
 > Anything you've prompted three times is a skill.
 
-A skill is a markdown file that becomes a slash command, loaded **only when invoked** — so it costs zero context otherwise.
-
-```
-Instructions file  =  always true      (conventions)
-Skills             =  sometimes needed (workflows)
-```
-
-That's why you can have thirty skills and a seventeen-line instructions file.
+A skill is a markdown file that becomes a slash command, loaded **only when invoked** — so it costs zero context otherwise. That's the clean split: the instructions file is what's *always* true, skills are what's *sometimes* needed. It's why you can have thirty skills and a seventeen-line instructions file.
 
 ```markdown
 # .claude/skills/fix-issue/SKILL.md
@@ -299,7 +227,7 @@ Fix GitHub issue: $ARGUMENTS
 Do NOT merge. Do NOT close the issue.
 ```
 
-Then `/fix-issue 1234`. Note it has Act 1 baked in — failing test first, show me the output, explicit boundaries. A skill is where a good prompt goes to become permanent.
+Then `/fix-issue 1234`. Note it has verification baked in — failing test first, show me the output, explicit boundaries. A skill is where a good prompt goes to become permanent.
 
 Good first skills: `fix-issue` · `tdd-cycle` · `deploy` · `review-pr` · `spike-and-report`.
 
@@ -311,19 +239,13 @@ An agent can forget an instruction. It cannot skip a hook, because **the harness
 
 Instructions are a note on the fridge. Hooks are the lock on the door.
 
-So **anything you've had to write in your instructions file twice should be a hook.** Twice means the instruction isn't working. Good candidates: lint/format after every edit, block commits unless tests pass, protect folders like migrations.
+So **anything you've had to write in your instructions file twice should be a hook.** Twice means the instruction isn't working. Good candidates: lint or format after every edit, block commits unless tests pass, protect generated code and migrations.
 
-Don't write hook config by hand — describe the rule in English:
+Don't write the config by hand — describe the rule in English and let the agent generate it:
 
 ```
-Write a hook that runs eslint --fix on every
-file you edit.
-
 Write a hook that blocks any commit unless
 `npm test` exits 0.
-
-Write a hook that blocks edits to db/migrations/ -
-I'll do those by hand.
 ```
 
 Then **verify the hook actually fires.** A hook you haven't seen block something is a hook you don't have.
@@ -347,17 +269,7 @@ tail-log:
 	@tail -n 100 dev.log
 ```
 
-Then **advertise it in the instructions file** — the agent can't use what it doesn't know exists:
-
-```markdown
-- Start the app: make dev
-- Read server output: make tail-log
-- In debug mode, sign-in links are logged to
-  stdout - use them to complete login flows
-  without asking me.
-```
-
-That last line is the difference between an agent that tests a signup flow end-to-end and one that stops to ask you for a magic link.
+Then advertise it in the instructions file — the agent can't use what it doesn't know exists. One line about where the logs live, and one about how to complete a login flow without asking you, is the difference between an agent that tests a signup end-to-end and one that stops to wait.
 
 ### Permissions that scale with trust
 
@@ -383,13 +295,13 @@ Three real unattended risks: destructive commands, secret exfiltration, and your
 
 ---
 
-## Act 3: Trust, but Verify
+## Trust, but Verify
 
-Acts 1 and 2 make the agent effective. Act 3 is what lets you stop reading every line.
+The pieces above make the agent effective. This is what lets you stop reading every line.
 
 ### Adversarial review: fresh eyes on every diff
 
-Self-review fails **structurally**. When a model reviews its own work, the reasoning that produced the change is sitting in context, and it reads as justification. A fresh context sees only the diff and the criteria.
+Self-review fails **structurally**. When a model reviews its own work, the reasoning that produced the change is sitting right there in context, and it reads as justification. A fresh context sees only the diff and the criteria.
 
 ```
 # Level 1 - almost magical:
@@ -408,7 +320,7 @@ and security issues. Be specific: file, line,
 failure scenario.
 ```
 
-Level 2 sounds absurd — a meaningless prize, five imaginary points. It works anyway. Level 3 has the best hit rate in my experience: a different provider's model has different blind spots. Jesse Vincent has documented cross-model review catching real P1 bugs in production open source.
+Level 2 sounds absurd — a meaningless prize, five imaginary points. It works anyway. Level 3 has the best hit rate in my experience, and it makes sense: a different provider's model has different blind spots.
 
 The one rule: **always scope the reviewer.** "Review this code" gets you unbounded stylistic opinions, and then you over-engineer chasing findings that were never problems.
 
@@ -436,46 +348,25 @@ Three worth having on day one:
 - **test-writer** — adds edge-case tests, *cannot touch source*
 - **cheap-researcher** — cheapest model, reads 20 files, returns 500 words
 
-Two fields carry the design weight. **`tools` is the safety lever** — a reviewer that can't edit can't "helpfully" fix what it finds. **`model` is the cost lever** — the researcher summarizing twenty files doesn't need your best model; the security reviewer does.
+Two fields carry the design weight. **`tools` is the safety lever** — a reviewer that can't edit can't "helpfully" fix what it finds. **`model` is the cost lever** — the researcher summarising twenty files doesn't need your best model; the security reviewer does.
 
 ### Visual verification: give it eyes
 
-For UI work the check is your eyes, which makes it a human bottleneck on every iteration. So give the agent eyes:
+For UI work the check is your eyes, which makes it a human bottleneck on every iteration. So give the agent eyes: let it start the dev server, screenshot the page, compare against the reference design, **list every visual difference**, fix each one, and re-screenshot until they match.
 
-```
-Implement the card component from this design:
-[attach design screenshot]
-Then:
-1. Start the dev server (make dev)
-2. Screenshot localhost:3000/cards
-3. Compare to the reference design
-4. List every visual difference
-5. Fix each one; re-screenshot after
-6. Stop when they match
-```
-
-**You walk away; it converges.** "List every visual difference" is what makes it work — it forces an explicit comparison instead of a vibe check. This is the one browser-automation integration worth wiring up; everything else stays CLI, because CLI output is text an agent can read.
+That "list every difference" step is what makes it work — it forces an explicit comparison instead of a vibe check. You walk away; it converges. This is the one browser-automation integration worth wiring up. Everything else stays CLI, because CLI output is text an agent can read.
 
 ### CI gates tuned for agent-generated code
 
-**Agent code fails differently from human code.** Apiiro's Fortune 50 telemetry, against baseline:
+Here's the thing that should reshape your pipeline: **agent code fails differently from human code.** The shallow problems mostly went away — syntax errors, simple logic bugs. The deep ones got substantially worse: privilege-escalation paths and architectural flaws, both up multiples on the human baseline.
 
-| Failure type | Change |
-|---|---:|
-| Syntax errors | **−76%** |
-| Logic bugs | **−60%** |
-| Privilege-escalation paths | **+322%** |
-| Architectural flaws | **+153%** |
+That mix is *precisely inverted* from what code review catches well. Reviewers reliably spot a typo and reliably skim past a subtly broken authorisation path in a 900-line PR.
 
-The shallow stuff went away; the deep stuff got substantially worse. That mix is *precisely inverted* from what code review catches well — reviewers reliably spot a typo and reliably skim past a subtly broken authorization path in a 900-line PR.
+Two more shifts worth designing for. Security performance stays roughly flat regardless of how new or large the model is, even as functional correctness keeps improving — so the next model will write better code, but not more secure code. And agents add without consolidating: duplication climbs, and refactoring work drops off sharply.
 
-Veracode, across 100+ models: **45% of AI-generated code failed security tests**, and security performance stayed **flat regardless of model size or recency** even as functional correctness improved. The next model will write better code. It will not write more secure code.
-
-GitClear, over 211 million changed lines (2020–2024): code churn nearly doubled, copy-pasted code up 48%, and **moved/refactored lines collapsed from 24.1% to 9.5%**. Agents add. They don't consolidate.
+Three gates catch specifically these things:
 
 ```
-# Use the agent to build its own gates:
-
 Add a CI job that fails any PR where test coverage
 drops below the main branch. Post the delta as a
 PR comment.
@@ -489,7 +380,7 @@ Add jscpd to CI: warn at 5% duplication, fail at
 ```
 
 - **Coverage ratchet** — catches the #1 agent cheat: weakening tests to pass.
-- **Secret scan + SAST** — because security is flat across models.
+- **Secret scan + SAST** — because security doesn't improve on its own.
 - **Duplication check** — the direct counter to the refactoring collapse.
 
 Then make it real:
@@ -503,7 +394,7 @@ Show me the pipeline failing.
 
 ---
 
-## Act 4: Let Go
+## Let Go
 
 ### Parallel worktrees
 
@@ -513,13 +404,10 @@ One git worktree per task = isolated checkouts. Review task one while task two r
 $ git worktree add ../app-oauth -b oauth
 $ git worktree add ../app-perf  -b perf
 
-# Terminal 1
+# then start an agent in each, simultaneously
 $ cd ../app-oauth && npm ci && <start your agent>
 
-# Terminal 2 - simultaneously
-$ cd ../app-perf && npm ci && <start your agent>
-
-# Cleanup when merged
+# cleanup when merged
 $ git worktree remove ../app-oauth
 ```
 
@@ -530,7 +418,7 @@ Ground rules, all earned the hard way:
 - **Watch shared state outside the repo** — database, Redis, ports. Worktrees isolate files, not your dev database.
 - **Never two agents in one file.**
 
-The contrarian datapoint: Mitchell Hashimoto deliberately runs **one** agent, active maybe 10–20% of his day, and ships significant features. More parallelism is only more output if your review capacity absorbs it.
+Worth the contrarian datapoint: Mitchell Hashimoto deliberately runs **one** agent, active maybe 10–20% of his day, and ships significant features. More parallelism is only more output if your review capacity absorbs it.
 
 ### Headless fan-out for migrations
 
@@ -571,21 +459,9 @@ while true; do
 done
 ```
 
-```markdown
-# PROMPT.md - the agent's entire brain
-Study SPEC.md and fix_plan.md.
-Pick the SINGLE most important unfinished task
-and implement it.
-Rules:
-- Search before assuming something's missing
-- No stubs or placeholders - real code only
-- Run build + tests; fix ALL failures first
-- Update fix_plan.md, commit, then stop
-```
+`PROMPT.md` is the agent's entire brain: study the spec and the fix plan, pick the single most important unfinished task, implement it for real with no stubs, run build and tests, fix all failures, update the plan, commit, stop.
 
-Why does something this dumb work? **Backpressure.** The compiler and test suite reject bad iterations automatically, and that rejection *is* the steering. It's Act 1's "close the loop" taken to its limit.
-
-Field results are real: an overnight hackathon shipping six repos; a ~$50k-contract MVP for roughly $297 in tokens.
+Why does something this dumb work? **Backpressure.** The compiler and test suite reject bad iterations automatically, and that rejection *is* the steering. It's "close the loop" taken to its limit.
 
 Scope it honestly — Huntley, who invented it, gets **greenfield bootstrapping to about 90%**, wouldn't run it on an existing codebase, and calls claims of 100% engineer-free work "horseshit."
 
@@ -604,15 +480,6 @@ cause, write findings + proposed fix to
 docs/investigations/482.md
 Do NOT push, comment on the issue, or open a PR.
 Report only.
-```
-
-Or explore in parallel:
-
-```
-Try three approaches to caching the report query:
-materialized view, Redis, request-level memo.
-Prototype each on a branch, benchmark, write a
-comparison to docs/spikes/report-caching.md
 ```
 
 > **Overnight agents write to files. Humans ship.**
@@ -634,40 +501,11 @@ you used in this session - things a future agent
 bullets I can paste into the instructions file.
 ```
 
-```
-     ┌──────────────────────────────────────┐
-     │                                      │
-     ▼                                      │
-  agent works                               │
-     │                                      │
-     ▼                                      │
-  learns a trick ──▶ you capture it ──▶ future sessions
-     │                start smarter          ▲
-     │                     │                 │
-     │                     ▼                 │
-     │            they hit harder problems ──┘
-     └──────────────▶ new tricks
-```
-
-Two more in the same family:
-
-```
-# After a clever workaround:
-That approach to [X] was clever. Write it up as a
-reusable skill with a concrete example, so future
-sessions can use it without rediscovering it.
-
-# Monthly - mine your failures:
-Read the last 20 CI failure logs. What are the 3
-most common agent mistakes? For each, propose an
-instructions-file line or a hook that prevents it.
-```
-
-That last one is the flywheel eating its own errors. It's how one well-tuned agent outperforms a fleet of generic ones.
+Then promote the useful ones into the instructions file or a skill. The monthly version of the same move is the one that really pays: have the agent read your last 20 CI failures, name the 3 most common mistakes, and propose a rule or hook that prevents each. That's the flywheel eating its own errors — and it's how one well-tuned setup outperforms a fleet of generic ones.
 
 ### The scorecard: your gut is not a metric
 
-Back to Part 0. Perception is broken, so instrument.
+Your perception is the broken instrument, so instrument around it.
 
 ```
 Write scripts/agent-scorecard.sh that reports, for
@@ -681,7 +519,7 @@ the last 30 days:
 Print a table. Add a Makefile target.
 ```
 
-**Capture the baseline now**, before you build anything else. This is the one step that's impossible to do retroactively.
+**Capture the baseline now**, before you build anything else. It's the one step that's impossible to do retroactively.
 
 ### The monthly prune: systems must shrink too
 
@@ -692,29 +530,9 @@ A system that only grows eventually ignores itself. An instructions file that's 
 - Hooks that never fire → audit.
 - Workarounds for bugs that got fixed → gone.
 
-```
-Review my instructions file. For each line, assess:
-- Does the current model still need this?
-- Is the rule still true? (APIs change)
-- Is there a shorter way to say it?
-Flag lines that are safe to remove.
-I'll make the final call.
-```
+Get the analysis from the agent, but keep the decision — pruning is a judgement call about your own codebase.
 
 One force makes this mandatory rather than nice-to-have: **newer models need fewer rules.** A file tuned for last year's model is over-constrained today, and half of what you wrote was compensating for a weakness that no longer exists.
-
----
-
-## The 30-Day Build
-
-| Week | Theme | Build | Cost |
-|---|---|---|---|
-| **1** | Talk | Verification in every prompt · four ingredients · two-strike rule · plan before build | Zero setup |
-| **2** | Teach | Instructions file (prune hard) · first skill · first hooks · agent-readable logs · permission ladder | ~1 hour |
-| **3** | Verify | Adversarial review pre-merge · custom specialists · visual verification · CI gates | The safety net |
-| **4** | Let go | Worktrees · one autonomous loop · end-of-day agent · scorecard vs. baseline · flywheel + prune | The system runs |
-
-**Run the scorecard in week 1**, not week 4 — you want the "before" photo before you change anything. New to agents? Week 1 alone is enough. Leading a team? Weeks 3–4 are your leverage, because gates and measurement are the parts individuals won't build for themselves.
 
 ---
 
@@ -740,13 +558,13 @@ A coding agent is a component, not a colleague. It generates plausible work quic
 
 Three things I'd underline:
 
-**The failure mode inverted, and nobody updated their review process.** Fewer typos, far more privilege-escalation paths and architectural flaws. Human review is well-calibrated for the old distribution and badly calibrated for the new one. That gap is what CI gates are for — it isn't something you can be more careful about.
+**The failure mode inverted, and nobody updated their review process.** Fewer typos, far more broken authorisation paths and architectural flaws. Human review is well-calibrated for the old distribution and badly calibrated for the new one. That gap is what CI gates are for — it isn't something you can be more careful about.
 
 **Structure beats vigilance.** Instructions get forgotten; hooks execute. Approval prompts become reflexes; allowlists and sandboxes hold. Every durable improvement in my setup was converting an intention into a mechanism.
 
 **The compounding is the whole game.** Better prompts help this afternoon. An instructions file helps every session forever. A flywheel makes next month better without your involvement.
 
-The measurements are what convinced me, same as with [serving](https://github.com/ishaan119/serving_llm_models). There, the model didn't get smarter — 38× more throughput came from getting the serving out of its own way. Here, the model doesn't get smarter either. You just stop being the bottleneck in your own loop.
+Same lesson as [serving](https://github.com/ishaan119/serving_llm_models), where 38× more throughput came from getting the serving out of the model's way rather than from a better model. Here too, the model doesn't get smarter. You just stop being the bottleneck in your own loop.
 
 > Your job is no longer to write code. It's to build a system that writes correct code.
 
@@ -756,7 +574,6 @@ Start with verification on your very next prompt. It costs nothing, and every ot
 
 ## Go Deeper
 
-**Guides worth your weekend**
 - [Claude Code best practices](https://code.claude.com/docs)
 - Simon Willison — [Designing agentic loops](https://simonwillison.net/2025/Sep/30/designing-agentic-loops/) · [Vibe engineering](https://simonwillison.net/2025/Oct/7/vibe-engineering/)
 - Mitchell Hashimoto — [Vibing a Non-Trivial Ghostty Feature](https://mitchellh.com/writing/non-trivial-vibing)
@@ -764,13 +581,6 @@ Start with verification on your very next prompt. It costs nothing, and every ot
 - Armin Ronacher — [Agentic Coding Recommendations](https://lucumr.pocoo.org/2025/6/12/agentic-coding/)
 - Geoffrey Huntley — [the Ralph loop](https://ghuntley.com/ralph/)
 - HumanLayer — [Advanced Context Engineering for Coding Agents](https://github.com/humanlayer/advanced-context-engineering-for-coding-agents/blob/main/ace-fca.md)
-
-**The evidence** (for when someone asks "says who?")
-- [METR RCT](https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/) · [2026 follow-up](https://metr.org/blog/2026-02-24-uplift-update/) — the perception gap, and an honest re-examination
-- [DORA 2025](https://dora.dev/research/2025/dora-report/) — the amplifier thesis
-- [Stanford SE Productivity Lab](https://softwareengineeringproductivity.stanford.edu/) — gains by task complexity and codebase maturity
-- [GitClear](https://www.gitclear.com/ai_assistant_code_quality_2025_research) — churn, duplication, the refactoring collapse
-- [Veracode 2025 GenAI Code Security Report](https://www.veracode.com/resources/analyst-reports/2025-genai-code-security-report/) · Apiiro Fortune 50 telemetry — the failure-mode shift
 
 ---
 
