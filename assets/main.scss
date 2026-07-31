@@ -807,6 +807,25 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   height: auto;
   border-radius: 10px;
   border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* Hero image, between the post header and the two-column body. Several posts
+   carried a hero_image in front matter that no layout rendered — they were
+   silently dropped when this theme replaced minima. */
+.post-hero {
+  margin: 0 auto 2.6rem;
+}
+.post-hero img {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Deliberately NOT object-fit: cover with a max-height. These heroes are
+     multi-panel comics and diagrams — cropping one silently eats a panel or
+     an axis label. Full aspect ratio, and let a tall image be tall. */
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
 }
 
 /* ---------- CV timeline (about page) ---------- */
