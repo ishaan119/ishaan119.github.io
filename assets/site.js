@@ -140,6 +140,18 @@
       }
     }
 
+    /* ---------- wide tables scroll instead of squeezing ---------- */
+    // At 390px the body column is ~342px wide. A three-column comparison table
+    // squeezed into that gets roughly one word per line, which is unreadable.
+    // Wrapping lets the table keep a usable min-width and scroll sideways
+    // instead. Without JS you get the old squeeze — degraded, still readable.
+    content.querySelectorAll('table').forEach(function (table) {
+      var wrap = document.createElement('div');
+      wrap.className = 'table-wrap';
+      table.parentNode.insertBefore(wrap, table);
+      wrap.appendChild(table);
+    });
+
     /* ---------- copy buttons on code blocks ---------- */
     content.querySelectorAll('pre').forEach(function (pre) {
       var wrap = document.createElement('div');

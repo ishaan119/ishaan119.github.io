@@ -140,6 +140,12 @@ from its files through fine-tuning to production serving:
 - [Stop Prompting. Start Engineering.]({{ '/stop-prompting-start-engineering/' | relative_url }})
   — the five components of a working setup, and the research behind each one.
 
+**Engineering Practice** — the process side, from the years before any of this:
+
+- [The Founding Engineer's Playbook]({{ '/the-founding-engineers-playbook/' | relative_url }})
+  — code review, git hooks, release workflows, CI/CD, monitoring, security. The
+  minimum a small team needs to ship with confidence.
+
 ## Elsewhere
 
 Code for every post lives on [GitHub](https://github.com/ishaan119) — each post

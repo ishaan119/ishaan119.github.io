@@ -28,6 +28,17 @@ existing string exactly to group posts, or introduce a new one to add a chip.
 The homepage stats (post count, series count, total reading minutes) are all
 computed from the posts, so there's nothing to update by hand.
 
+A *new* series does need one manual step: its colour. `main.scss` maps each
+slugified series to a `--tint` in three places — `.chip[data-filter=…]`,
+`.card-item[data-series=…]`, and `.post`/`.post-nav[data-series=…]`. Miss one and
+that series silently falls back to `--accent`, so it looks correct on the card
+and wrong on the post. Also add the post to the listing in `about.md`, which is
+hand-maintained.
+
+`hero_image` renders a full-width image between the header and the body. It is
+deliberately *not* cropped to a fixed height — several heroes are multi-panel
+comics or labelled diagrams, and `object-fit: cover` eats a panel.
+
 Don't write an `# H1` at the top of the body — the layout renders the title.
 
 Then `git push`. The URL is `/slug/`, taken from the filename minus the date.
@@ -82,6 +93,14 @@ Two things that are easy to break:
 - **Code blocks must not wrap** (`white-space: pre` + `overflow-x: auto`) —
   several posts contain ASCII architecture diagrams that become unreadable if
   the lines reflow.
+- **Tables are wrapped by `site.js`** in a `.table-wrap` scroll container and
+  given `min-width: 30rem`. Without it, a three-column comparison table squeezed
+  into a 342px phone column renders roughly one word per line. The wrapper picks
+  up the rhythm margin, so the table inside is reset to `margin: 0`.
+
+Note that GitHub's alert syntax (`> [!NOTE]`) does **not** render in kramdown —
+it comes out as literal text. When importing a README, convert those to plain
+blockquotes.
 
 Deploys use the GitHub Pages legacy branch build from `main`, so only
 [allowlisted plugins](https://pages.github.com/versions/) work. There's a

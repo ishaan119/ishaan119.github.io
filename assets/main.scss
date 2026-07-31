@@ -320,6 +320,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .chip[data-filter="agentic-coding"] { --tint: var(--accent-4); }
 .chip[data-filter="llm-internals"]  { --tint: var(--accent); }
 .chip[data-filter="protocols"]      { --tint: var(--accent-3); }
+.chip[data-filter="engineering-practice"] { --tint: var(--accent-5); }
 .chip[data-filter="all"]            { --tint: var(--accent-2); }
 
 .chip:hover {
@@ -356,6 +357,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .card-item[data-series="agentic-coding"] { --tint: var(--accent-4); }
 .card-item[data-series="llm-internals"]  { --tint: var(--accent); }
 .card-item[data-series="protocols"]      { --tint: var(--accent-3); }
+.card-item[data-series="engineering-practice"] { --tint: var(--accent-5); }
 
 .card {
   display: flex;
@@ -504,6 +506,8 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .post-nav[data-series="llm-internals"]  { --tint: var(--accent); }
 .post[data-series="protocols"],
 .post-nav[data-series="protocols"]      { --tint: var(--accent-3); }
+.post[data-series="engineering-practice"],
+.post-nav[data-series="engineering-practice"] { --tint: var(--accent-5); }
 
 .post-header {
   padding: 3.2rem 1.5rem 2rem;
@@ -772,8 +776,23 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
 .copy-btn.is-done { color: var(--accent-3); border-color: var(--accent-3); }
 
+/* Wrapper added by site.js. The table keeps a min-width and the wrapper
+   scrolls, rather than the table collapsing to one word per line on a phone. */
+.post-content .table-wrap {
+  overflow-x: auto;
+  /* Nudge the fade below into view when there's more table to the right. */
+  background:
+    linear-gradient(to right, var(--bg) 30%, transparent) left / 2rem 100% no-repeat,
+    linear-gradient(to left, var(--bg) 30%, transparent) right / 2rem 100% no-repeat;
+  background-attachment: local, local;
+}
+/* The wrapper inherits the rhythm rule's margin-top, so the table inside must
+   not add its own on top of it. */
+.post-content .table-wrap > table { margin: 0; }
+
 .post-content table {
   width: 100%;
+  min-width: 30rem;
   margin: 1.7rem 0;
   border-collapse: collapse;
   font-size: 0.93rem;
