@@ -5,14 +5,13 @@ subtitle: "What actually makes coding agents work"
 series: "Agentic Coding"
 date: 2026-07-30
 featured: true
+hero_image: https://github.com/user-attachments/assets/cdc0d146-517f-4683-9318-815831287765
+hero_alt: "Stop Prompting. Start Engineering."
 description: >-
   I went looking for the perfect prompt for coding agents. There isn't one.
   What the fast developers have is a system — five components, most buildable
   in under an hour. Here it is.
 ---
-
-<img width="1408" height="768" alt="Gemini_Generated_Image_ndv6gkndv6gkndv6" src="https://github.com/user-attachments/assets/cdc0d146-517f-4683-9318-815831287765" />
-
 
 I went looking for the prompt.
 
