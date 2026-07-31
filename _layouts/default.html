@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -26,7 +26,10 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>◆</text></svg>">
 
   <script>
-    // Apply the saved theme before first paint to avoid a flash.
+    // Light is the default (set on <html> above). Dark is opt-in via the
+    // toggle only — deliberately NOT tied to the OS preference, so a reader
+    // whose system is in dark mode still lands on the readable light theme.
+    // Applied before first paint to avoid a flash.
     (function () {
       try {
         var t = localStorage.getItem('theme');
