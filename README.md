@@ -74,7 +74,18 @@ _layouts/
   page.html         plain pages (about)
 assets/main.scss    all styles
 assets/site.js      theme toggle, filters, TOC, copy buttons
+assets/img/         site images (portrait, favicon, avatar)
 ```
+
+`assets/img/ishaan.png` does quadruple duty: the 28px header avatar, the About
+page portrait, the favicon, and the `og:image` fallback for pages without a hero.
+It's 192px square, so it stays sharp at every one of those sizes. Replacing it
+means replacing all four at once — that's deliberate, not an oversight.
+
+`og:image` and `twitter:card` are conditional on `hero_image`: posts with a hero
+get `summary_large_image` pointing at it, everything else gets a plain `summary`
+card with the portrait. Don't set `summary_large_image` globally — a 192px square
+renders as a blank card, since the minimum for the wide format is 300x157.
 
 ## Theme notes
 

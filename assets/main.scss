@@ -157,16 +157,23 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 }
 .brand:hover { text-decoration: none; }
 
-.brand-mark {
-  font-size: 0.85rem;
-  transform: translateY(-1px);
-  transition: transform 0.4s ease;
-  background: linear-gradient(135deg, var(--accent), var(--accent-4));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Replaces the old ◆ glyph. The photo is a near-black studio headshot, so on the
+   dark theme it needs a visible ring or it dissolves into the header. */
+.brand-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  /* The source is 192px — well over 2× the 28px display size, so it stays sharp
+     on a retina screen. Anything larger here would start to soften. */
+  border: 1px solid var(--border-strong);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 14%, transparent);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
-.brand:hover .brand-mark { transform: translateY(-1px) rotate(180deg); }
+.brand:hover .brand-avatar {
+  transform: scale(1.06);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 40%, transparent);
+}
 
 .site-nav {
   display: flex;
@@ -845,6 +852,40 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   border-radius: var(--radius);
   border: 1px solid var(--border);
   box-shadow: var(--shadow);
+}
+
+/* ---------- intro photo (about page) ---------- */
+
+.intro {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.6rem;
+}
+
+/* The rhythm rule (.post-content > * + *) spaces the intro's children, but the
+   flex children here are laid out side by side — a top margin on the text block
+   would push it out of alignment with the photo. */
+.intro-text > :first-child { margin-top: 0; }
+
+.intro-photo {
+  flex: 0 0 auto;
+  width: 132px;
+  height: 132px;
+  border-radius: 14px;
+  object-fit: cover;
+  border: 1px solid var(--border-strong);
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 600px) {
+  /* Stacking beats shrinking: at 342px a 132px photo leaves ~190px for prose,
+     which wraps to three or four words a line. */
+  .intro { display: block; }
+  .intro-photo {
+    width: 108px;
+    height: 108px;
+    margin: 0 0 1.3rem;
+  }
 }
 
 /* ---------- CV timeline (about page) ---------- */

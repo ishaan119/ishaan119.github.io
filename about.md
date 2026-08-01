@@ -9,12 +9,20 @@ description: >-
   and measuring what they do.
 ---
 
+<div class="intro">
+  <img class="intro-photo" src="{{ '/assets/img/ishaan.png' | relative_url }}"
+       alt="Ishaan Sutaria" width="192" height="192" loading="eager" decoding="async">
+  <div class="intro-text" markdown="1">
+
 I'm Ishaan Sutaria. I'm a Solutions Architect at **AWS**, based in Mumbai, and
 I've been building software for about a decade — mostly backend and
 infrastructure, lately mostly the machinery around language models.
 
 This site is where I write about the second part. Usually by picking one question
 I can't answer from memory and tracing it end to end until I can.
+
+  </div>
+</div>
 
 The through-line across everything here: **the interesting part is rarely the
 model.** It's the machinery around it — the tokenizer that lives outside the
