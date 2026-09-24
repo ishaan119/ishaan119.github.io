@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vrindaban Flute — Indian Art Music study</title>
+<meta name="description" content="A study reader for the ten Indian art music chapters: swara, saptak, raga, thaat, tala, nuances and genres.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+<a class="skip-link" href="#view">Skip to content</a>
+
+<header class="topbar">
+  <button class="icon-btn menu-btn" id="menuBtn" aria-label="Show chapter list" aria-expanded="false">
+    <span class="bars" aria-hidden="true"></span>
+  </button>
+
+  <a class="brand" href="#/">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 40 40" width="26" height="26" role="img" aria-label="">
+        <circle cx="20" cy="20" r="18" fill="none" stroke="currentColor" stroke-width="1.4" opacity=".45"/>
+        <path d="M7 26 L33 14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="13" cy="23.2" r="1.5" fill="currentColor"/>
+        <circle cx="18" cy="20.9" r="1.5" fill="currentColor"/>
+        <circle cx="23" cy="18.6" r="1.5" fill="currentColor"/>
+        <circle cx="28" cy="16.3" r="1.5" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="brand-text">
+      <b>Indian Art Music</b>
+      <i>Vrindaban Gurukul · bansuri course</i>
+    </span>
+  </a>
+
+  <div class="topbar-right">
+    <button class="search-trigger" id="searchBtn" aria-label="Search all chapters">
+      <span aria-hidden="true">⌕</span>
+      <span class="st-text">Search</span>
+      <kbd>/</kbd>
+    </button>
+    <button class="icon-btn" id="droneBtn" aria-label="Toggle tanpura drone" title="Tanpura drone">
+      <span aria-hidden="true">◎</span>
+    </button>
+    <button class="icon-btn" id="themeBtn" aria-label="Switch between light and dark" title="Light / dark">
+      <span aria-hidden="true">◐</span>
+    </button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="sidebar" id="sidebar" aria-label="Chapters">
+    <div class="side-progress">
+      <div class="ring" id="progressRing" role="img" aria-label="Chapters read">
+        <svg viewBox="0 0 44 44" width="44" height="44">
+          <circle class="ring-bg" cx="22" cy="22" r="19" fill="none" stroke-width="4"/>
+          <circle class="ring-fg" cx="22" cy="22" r="19" fill="none" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <span class="ring-label" id="progressLabel">0/10</span>
+      </div>
+      <div class="side-progress-text">
+        <b>Chapters read</b>
+        <span id="progressHint">Mark a chapter done as you finish it</span>
+      </div>
+    </div>
+
+    <ul class="nav-list" id="chapterNav"></ul>
+
+    <div class="nav-section">
+      <a class="nav-link" href="#/practice"><span class="nl-ic" aria-hidden="true">✓</span>Practice &amp; quizzes</a>
+      <a class="nav-link" href="#/cards"><span class="nl-ic" aria-hidden="true">▣</span>Flashcards</a>
+      <a class="nav-link" href="#/riyaz"><span class="nl-ic" aria-hidden="true">♪</span>Riyaz tools</a>
+      <a class="nav-link" href="#/glossary"><span class="nl-ic" aria-hidden="true">≡</span>Glossary</a>
+      <a class="nav-link" href="#/sources" id="sourcesLink"><span class="nl-ic" aria-hidden="true">⌘</span><span class="nl-text">Source PDFs</span></a>
+    </div>
+  </nav>
+
+  <main id="view" class="view" tabindex="-1"></main>
+</div>
+
+<div class="search-overlay" id="searchOverlay" hidden>
+  <div class="search-box" role="dialog" aria-modal="true" aria-label="Search chapters">
+    <input type="search" id="searchInput" placeholder="Search swara, thaat, khaali, dhrupad…" autocomplete="off" spellcheck="false">
+    <div class="search-results" id="searchResults"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> move <kbd>↵</kbd> open <kbd>esc</kbd> close</div>
+  </div>
+</div>
+
+<div class="toast" id="toast" hidden></div>
+
+<script src="js/config.js"></script>
+<script src="js/data/chapters.js"></script>
+<script src="js/data/reference.js"></script>
+<script src="js/data/quizzes.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/tools.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
