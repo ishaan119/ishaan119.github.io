@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Every Check Passed"
-subtitle: "How to think about MCP server security, and how to secure one today"
+title: "Authenticated. Authorized. Never Intended."
+subtitle: "How to secure an MCP server when every check passes"
 series: "Protocols"
 date: 2026-09-29
 description: >-

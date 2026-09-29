@@ -142,7 +142,7 @@ from its files through fine-tuning to production serving:
   the three primitives, the discovery handshake.
 - [A2A Demystified]({{ '/a2a-demystified/' | relative_url }}) — the agent-to-agent
   protocol and the NxM integration problem it solves.
-- [Every Check Passed]({{ '/every-check-passed/' | relative_url }}) — why valid
+- [Authenticated. Authorized. Never Intended.]({{ '/every-check-passed/' | relative_url }}) — why valid
   tokens do not prove intent, and four boundaries that hold when a model is steered.
 
 **Agentic Coding** — what actually works when you build software with agents:
