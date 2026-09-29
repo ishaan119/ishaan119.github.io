@@ -142,6 +142,8 @@ from its files through fine-tuning to production serving:
   the three primitives, the discovery handshake.
 - [A2A Demystified]({{ '/a2a-demystified/' | relative_url }}) — the agent-to-agent
   protocol and the NxM integration problem it solves.
+- [Every Check Passed]({{ '/every-check-passed/' | relative_url }}) — why valid
+  tokens do not prove intent, and four boundaries that hold when a model is steered.
 
 **Agentic Coding** — what actually works when you build software with agents:
 
@@ -156,8 +158,8 @@ from its files through fine-tuning to production serving:
 
 ## Elsewhere
 
-Code for every post lives on [GitHub](https://github.com/ishaan119) — each post
-links to the repo where the work happened. I'm on
+Code for posts with runnable work lives on [GitHub](https://github.com/ishaan119) —
+those posts link to the repo where the work happened. I'm on
 [LinkedIn](https://linkedin.com/in/ishaansutaria), reachable at
 [ishaansutaria@gmail.com](mailto:ishaansutaria@gmail.com), and there's an
 [RSS feed]({{ '/feed.xml' | relative_url }}) if you'd rather not rely on an

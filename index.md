@@ -13,5 +13,5 @@ runs at 25 tokens/sec, I measured 25 tokens/sec on a GPU I was paying for. If it
 says the embedding layer is just row-indexing into a matrix, I checked that the
 two paths return bit-identical tensors.
 
-Most of these started as a README in the repo where I did the work — the code is
-still linked from every post.
+Most of these started as a README in the repo where I did the work. When a post
+has code, it links to it.
